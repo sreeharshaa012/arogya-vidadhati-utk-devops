@@ -3,13 +3,12 @@ provider "aws" {
 }
 
 resource "aws_instance" "utkdevops-server" {
-    ami = "ami-06c68f701d8090592"
+    ami = "ami-0427090fd1714168b" //23-07-24
     instance_type = "t2.micro"
     key_name = "utkdevops"
     //security_groups = [ "demo-sg" ]
     vpc_security_group_ids = [aws_security_group.utkdevops-sg.id]
     subnet_id = aws_subnet.utkdevops-public-subnet-01.id 
-
 }
 
 resource "aws_security_group" "utkdevops-sg" {
@@ -25,6 +24,30 @@ resource "aws_security_group" "utkdevops-sg" {
     cidr_blocks      = ["0.0.0.0/0"]
     }
 
+  ingress {
+    description      = "Jenkins Port"
+    from_port        = 8080
+    to_port          = 8080
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    } 
+
+  ingress {
+    description      = "sonarqube port"
+    from_port        = 9000
+    to_port          = 9000
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    }   
+
+  ingress {
+    description      = "https port"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    }    
+
   egress {
     from_port        = 0
     to_port          = 0
@@ -34,7 +57,7 @@ resource "aws_security_group" "utkdevops-sg" {
   }
 
   tags = {
-    Name = "ssh-port"
+    Name = "ports"
 
   }
 }
